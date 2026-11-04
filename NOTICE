@@ -3,11 +3,12 @@ News and Other Stuff
 
 A personal daily paper built on the Nostr Observer
 (https://github.com/NosFabrica/the-nostr-observer), Copyright (c) 2026
-NosFabrica, released under the MIT License (see LICENSE). The changes in
-this fork are released under the same licence.
+NosFabrica, released under the MIT License (see LICENSE). The changes made in
+megistusXYZ/news-and-other-stuff, which this fork comes from, and in this
+fork are released under the same licence.
 
-The MIT License covers the code. It does not grant rights to the names,
-marks and pictures below, which are listed here with where they came from.
+The MIT License covers the code. It does not grant rights to the names
+and marks below, which are listed here with where they came from.
 
 Marks
 -----
@@ -15,15 +16,6 @@ Marks
   (.claude/skills/nostr-observer/reference/brands/brainstorm/)
   Brainstorm and its marks belong to NosFabrica. Taken from
   NosFabrica/Brainstorm-UI for the Brainstorm-branded edition.
-- Megistus imprint (.claude/skills/nostr-observer/reference/imprints/megistus.webp)
-  The mark of Megistus XYZ. All rights reserved.
-
-Pictures
---------
-- Ostrich stamps (.claude/skills/nostr-observer/reference/stamps/)
-  ostrich-portrait.webp: generated with Grok (xAI) for this paper; xAI's
-  terms assign the output to the user who made it.
-  ostrich-profile.webp: an engraved ostrich supplied by Megistus XYZ.
 
 Third-party files, each with its own licence beside it
 ------------------------------------------------------

@@ -803,19 +803,20 @@ fetch, since they signed nothing in the window and would otherwise be hex.
 The open questions live at the end of `docs/PLAN.md`. The one that gates the
 timeline is whether `nip85.nosfabrica.com` can onboard new observers on demand.
 
-**Where this fork lives (2026-09-26).** News and Other Stuff is its own
-product on the Observer engine, published as the public GitHub fork
-`megistusXYZ/news-and-other-stuff`. Its default branch is `megistus-edition`,
-and its `main` mirrors NosFabrica's untouched. In this clone, `origin` is the
-fork and `upstream` is NosFabrica, whose push address stays disabled. Engine
+**Where this fork lives (2026-11-04).** News and Other Stuff is its own
+product on the Observer engine, in the public GitHub fork
+`aburra16/news-and-other-stuff`, which comes from
+`megistusXYZ/news-and-other-stuff`, itself a fork of NosFabrica's. Its default
+branch is `main`. In this clone, `origin` is this fork and `upstream` is
+NosFabrica, whose push address stays disabled. Engine
 improvements go back as small PRs, each cut fresh from `upstream/main`,
 brand-free, with tests, and reviewed by someone else. The proposal is
 NosFabrica/the-nostr-observer#8 (2026-09-26). NosFabrica's `main` has no living
 copy (no dress.mjs or living.js), no wires and no puzzles, so the order it
 offers is: validator and resolver fixes, the wires, the living copy with its
 accessibility, then the back page. No PR goes up until a maintainer answers. These stay downstream: the Brainstorm
-brand files, the Megistus imprint, the ostrich stamps, `docs/QA-*` and The
-Tape. NOTICE records what the MIT licence does not cover.
+brand files, `docs/QA-*` and The Tape. This fork bundles no stamp or imprint;
+the hooks for them stay, and a paper without one simply leaves it out. NOTICE records what the MIT licence does not cover.
 Stay current with `git fetch upstream && git merge upstream/main`.
 
 **The Brainstorm Observer connector (2026-09-27).** Following Vitor's

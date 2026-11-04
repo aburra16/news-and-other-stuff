@@ -196,7 +196,7 @@ test('a reader or their Claude sets the paper once; only a reader\'s own setting
   assert.equal(later.place, 'Chicago, Illinois', 'a change to one thing keeps the rest')
   assert.deepEqual(later.teams, ['Chicago Cubs (Baseball)', 'Chicago Bulls (Basketball)'])
   assert.equal(later.founded, '2026-09-25', 'founded once')
-  assert.equal((await callTool('set_paper', { stamp: 'ostrich' }, READER, d)).isError, true, 'nothing a reader may set')
+  assert.equal((await callTool('set_paper', { stamp: 'crest' }, READER, d)).isError, true, 'nothing a reader may set')
 })
 
 test('each morning the digest uses the saved paper: its place, teams and pages, and its topics unless the reader names others', async () => {

@@ -427,36 +427,46 @@ test('the living copy carries the reader\'s clock for its own times; none known,
 
 // --- the stamp beside the nameplate, 2026-09-25 ---------------------------------------
 
+// As much of a webp as the printer reads for a picture's shape.
+const webpOf = (w, h) => {
+  const b = Buffer.alloc(30)
+  b.write('RIFF', 0, 'ascii')
+  b.write('WEBP', 8, 'ascii')
+  b.write('VP8X', 12, 'ascii')
+  b.writeUIntLE(w - 1, 24, 3)
+  b.writeUIntLE(h - 1, 27, 3)
+  return b.toString('base64')
+}
+
 test('a paper with a stamp carries it as its own inlined picture, and still undresses to the checked edition', () => {
-  const stamped = { ...assets, stamps: { ostrich: 'UklGRg==' } }
-  const withStamp = { ...corpus, paper: { stamp: 'ostrich' } }
+  const stamped = { ...assets, stamps: { crest: 'UklGRg==' } }
+  const withStamp = { ...corpus, paper: { stamp: 'crest' } }
   const { html } = dress(page, withStamp, stamped)
-  assert.match(html, /<html data-stamp="ostrich">/)
+  assert.match(html, /<html data-stamp="crest">/)
   assert.match(html, /<style id="living-stamp">:root\{--lv-stamp:url\("data:image\/webp;base64,UklGRg=="\)\}<\/style>\n/)
   const undressed = html
     .replace(/<meta name="theme-color"[^>]*>\n/g, '')
     .replace(/<style id="living-fonts">[\s\S]*?<\/style>\n<style id="living-css">[\s\S]*?<\/style>\n/, '')
     .replace(/<style id="living-stamp">[\s\S]*?<\/style>\n/, '')
-    .replace(' data-stamp="ostrich"', '')
+    .replace(' data-stamp="crest"', '')
     .replace(/<script type="application\/json" id="observer-data">[\s\S]*?<\/script>\n<script type="module" id="living-js">[\s\S]*?<\/script>\n/, '')
     .replace(/ ?data-(ev|t|pk)="[^"]*"/g, '')
     .replace(/<a +/g, '<a ')
   assert.equal(undressed, page)
   assert.throws(() => dress(page, { ...corpus, paper: { stamp: 'pelican' } }, stamped), /Unknown stamp "pelican"/)
   assert.doesNotMatch(dress(page, corpus, stamped).html, /data-stamp|living-stamp/, 'no stamp configured, none applied')
-  const bundled = loadAssets().stamps
-  assert.deepEqual(Object.keys(bundled).sort(), ['ostrich-portrait', 'ostrich-profile'])
   // Each stamp carries its own proportions, read from the picture, so the cut
   // is drawn at its true shape whichever one the reader names.
-  const shaped = (name) => dress(page, { ...corpus, paper: { stamp: name } }, loadAssets()).html
-  assert.match(shaped('ostrich-profile'), /--lv-stamp-ratio:298 \/ 280/)
-  assert.match(shaped('ostrich-portrait'), /--lv-stamp-ratio:223 \/ 280/)
+  const shapes = { ...assets, stamps: { wide: webpOf(298, 280), tall: webpOf(223, 280) } }
+  const shaped = (name) => dress(page, { ...corpus, paper: { stamp: name } }, shapes).html
+  assert.match(shaped('wide'), /--lv-stamp-ratio:298 \/ 280/)
+  assert.match(shaped('tall'), /--lv-stamp-ratio:223 \/ 280/)
 })
 
 test('the stamp is set as a cut before the nameplate, the name untouched, and undresses away', () => {
-  const stamped = { ...assets, stamps: { ostrich: 'UklGRg==' } }
+  const stamped = { ...assets, stamps: { crest: 'UklGRg==' } }
   const named = page.replace('<title>t</title>', '<title>News and Other Stuff</title>').replace('<body>', '<body><header class="masthead"><h1>News and Other Stuff</h1><p class="motto">m</p></header>')
-  const paper = { name: 'News and Other Stuff', stamp: 'ostrich' }
+  const paper = { name: 'News and Other Stuff', stamp: 'crest' }
   const { html } = dress(named, { ...corpus, paper }, stamped)
   assert.match(html, /<header class="masthead"><span class="lv-cut" aria-hidden="true"><\/span><h1>News and Other Stuff<\/h1>/,
     'first in the header, so it stands to the left of the name and the motto')
@@ -464,7 +474,7 @@ test('the stamp is set as a cut before the nameplate, the name untouched, and un
     .replace(/<meta name="theme-color"[^>]*>\n/g, '')
     .replace(/<style id="living-fonts">[\s\S]*?<\/style>\n<style id="living-css">[\s\S]*?<\/style>\n/, '')
     .replace(/<style id="living-stamp">[\s\S]*?<\/style>\n/, '')
-    .replace(' data-stamp="ostrich"', '')
+    .replace(' data-stamp="crest"', '')
     .replace('<span class="lv-cut" aria-hidden="true"></span>', '')
     .replace(/<nav class="lv-index"[\s\S]*?<\/nav>/, '')
     .replace(/<script type="application\/json" id="observer-data">[\s\S]*?<\/script>\n<script type="module" id="living-js">[\s\S]*?<\/script>\n/, '')
@@ -476,8 +486,8 @@ test('the stamp is set as a cut before the nameplate, the name untouched, and un
 // --- a dark edition, 2026-09-25 -------------------------------------------------------
 
 test('a paper with a dark stamp carries both pictures and both shapes, refuses an unknown one, and undresses away', () => {
-  const real = loadAssets()
-  const paper = { stamp: 'ostrich-portrait', stampDark: 'ostrich-profile' }
+  const real = { ...assets, stamps: { tall: webpOf(223, 280), wide: webpOf(298, 280) } }
+  const paper = { stamp: 'tall', stampDark: 'wide' }
   const { html } = dress(page, { ...corpus, paper }, real)
   const style = /<style id="living-stamp">([\s\S]*?)<\/style>/.exec(html)[1]
   assert.match(style, /--lv-stamp:url\("data:image\/webp;base64,[A-Za-z0-9+/]+=*"\);--lv-stamp-ratio:223 \/ 280/)
@@ -487,7 +497,7 @@ test('a paper with a dark stamp carries both pictures and both shapes, refuses a
     .replace(/<meta name="theme-color"[^>]*>\n/g, '')
     .replace(/<style id="living-fonts">[\s\S]*?<\/style>\n<style id="living-css">[\s\S]*?<\/style>\n/, '')
     .replace(/<style id="living-stamp">[\s\S]*?<\/style>\n/, '')
-    .replace(' data-stamp="ostrich-portrait"', '')
+    .replace(' data-stamp="tall"', '')
     .replace(/<script type="application\/json" id="observer-data">[\s\S]*?<\/script>\n<script type="module" id="living-js">[\s\S]*?<\/script>\n/, '')
     .replace(/ ?data-(ev|t|pk)="[^"]*"/g, '')
     .replace(/<a +/g, '<a ')
@@ -542,13 +552,12 @@ test('the colophon can sign with the brand\'s own wordmark, inlined as plain SVG
 // --- the publisher's imprint, 2026-09-25 -------------------------------------------------
 
 test('the colophon carries the publisher\'s imprint: their logo, linked to their address, or nothing', () => {
-  const real = loadAssets()
-  assert.match(real.imprints.megistus, /^[A-Za-z0-9+/]+=*$/, 'the bundled Megistus logo is base64 webp')
+  const real = { ...loadAssets(), imprints: { acme: webpOf(224, 112) } }
   const footer = '<footer class="lv-colophon"><p class="lv-colophon-small">{{imprint}}Open source</p></footer>'
   const withFooter = { ...real, brands: { brainstorm: { ...real.brands.brainstorm, footer } } }
-  const paper = { ...brandCorpus.paper, imprint: { name: 'Megistus', url: 'https://www.megistus.xyz', logo: 'megistus' } }
+  const paper = { ...brandCorpus.paper, imprint: { name: 'Acme', url: 'https://acme.example', logo: 'acme' } }
   const { html } = dress(brandPage, { ...brandCorpus, paper }, withFooter)
-  assert.ok(html.includes('<p class="lv-colophon-small"><a class="lv-imprint" href="https://www.megistus.xyz" target="_blank" rel="noopener noreferrer" aria-label="Megistus"><span class="lv-imprint-logo"></span></a>Open source</p>'))
+  assert.ok(html.includes('<p class="lv-colophon-small"><a class="lv-imprint" href="https://acme.example" target="_blank" rel="noopener noreferrer" aria-label="Acme"><span class="lv-imprint-logo"></span></a>Open source</p>'))
   assert.match(html, /<style id="living-imprint">:root\{--lv-imprint:url\("data:image\/webp;base64,[A-Za-z0-9+/]+=*"\);--lv-imprint-ratio:\d+ \/ 112\}<\/style>/)
   assert.ok(dress(brandPage, brandCorpus, withFooter).html.includes('<p class="lv-colophon-small">Open source</p>'), 'no imprint, no slot left behind')
   assert.throws(() => dress(brandPage, { ...brandCorpus, paper: { ...paper, imprint: { ...paper.imprint, logo: 'nobody' } } }, withFooter), /Unknown imprint "nobody"/)

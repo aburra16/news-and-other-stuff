@@ -2148,13 +2148,13 @@ function pictureLinks () {
 
 // --- light and dark editions ------------------------------------------------------
 
-// The paper follows the reader's device until they choose; the ostrich is the
+// The paper follows the reader's device until they choose; the stamp is the
 // switch, and the choice is kept on this device. The edition is printed light
 // (data-theme="light"); this runs first so a dark reader's page turns before
 // they have read a line of it.
 const THEME_KEY = 'lv-theme'
 const themeNow = () => (document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light')
-// Two switches turn the paper: the ostrich, and "Dark mode" in the reading
+// Two switches turn the paper: the stamp, and "Dark mode" in the reading
 // panel. Each listens here, so whichever is used, both say the same.
 const themeListeners = []
 // The browser's own toolbar follows the paper's colour, chosen or not.

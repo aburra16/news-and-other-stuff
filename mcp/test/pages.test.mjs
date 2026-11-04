@@ -7,6 +7,7 @@
 import { test, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { request } from 'node:http'
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { createConnector, tokenAuth } from '../server.mjs'
 import { memoryStore } from '../store.mjs'
 import { callTool } from '../observer.mjs'
@@ -159,7 +160,12 @@ test('another site cannot change or delete a reader\'s paper, nor reach this con
 
 test('the house stamp is served for the nameplate when the house has one, and only that one file', async () => {
   assert.equal((await get('/assets/stamp.webp')).status, 404, 'no house stamp: none served, and the page leaves the cut out')
-  const house = createConnector({ authenticate: tokenAuth(new Map()), deps: { ...deps, paperDefaults: { stamp: 'ostrich-profile' } }, readers: new Set() })
+  // The fork bundles no stamp, so this test brings its own for as long as it runs.
+  const stamps = new URL('../../.claude/skills/nostr-observer/reference/stamps/', import.meta.url)
+  const stampFile = new URL('house-test.webp', stamps)
+  mkdirSync(stamps, { recursive: true })
+  writeFileSync(stampFile, 'RIFF')
+  const house = createConnector({ authenticate: tokenAuth(new Map()), deps: { ...deps, paperDefaults: { stamp: 'house-test' } }, readers: new Set() })
   await new Promise((resolve) => house.listen(0, '127.0.0.1', resolve))
   try {
     const at = `http://127.0.0.1:${house.address().port}`
@@ -167,7 +173,10 @@ test('the house stamp is served for the nameplate when the house has one, and on
     assert.equal(res.status, 200)
     assert.equal(res.headers.get('content-type'), 'image/webp')
     assert.equal((await fetch(at + '/assets/../stamp.webp')).status, 404)
-  } finally { house.close() }
+  } finally {
+    house.close()
+    rmSync(stampFile, { force: true })
+  }
   const odd = createConnector({ authenticate: tokenAuth(new Map()), deps: { ...deps, paperDefaults: { stamp: '../../package' } }, readers: new Set() })
   await new Promise((resolve) => odd.listen(0, '127.0.0.1', resolve))
   try { assert.equal((await fetch(`http://127.0.0.1:${odd.address().port}/assets/stamp.webp`)).status, 404, 'a stamp name is a name, never a path') } finally { odd.close() }

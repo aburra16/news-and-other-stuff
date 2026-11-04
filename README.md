@@ -5,16 +5,14 @@ from what the people you trust on Nostr actually said, ranked by
 [Brainstorm](https://brainstorm.world). Everything runs on your own machine,
 through your own Claude Code.
 
-![The front page of News and Other Stuff, Vol. I · No. 3: the nameplate with its ostrich, the section row, and the day's top three stories](docs/front-page.png)
-
 This is a fork of [NosFabrica/the-nostr-observer](https://github.com/NosFabrica/the-nostr-observer)
-(MIT), kept by [Megistus XYZ](https://www.megistus.xyz). It adds the Brainstorm
-edition and a living copy with accessible reader settings, credits in one
-"Sources & licences" list, issue numbers, the Feature and the back page.
+(MIT), by way of [megistusXYZ/news-and-other-stuff](https://github.com/megistusXYZ/news-and-other-stuff),
+which added the Brainstorm edition and a living copy with accessible reader
+settings, credits in one "Sources & licences" list, issue numbers, the Feature
+and the back page.
 Improvements that help any Observer reader are offered back upstream as small
 pull requests; the brand and the edition's own choices stay here. See
-[NOTICE](NOTICE) for the marks and pictures, which the MIT licence does not
-cover.
+[NOTICE](NOTICE) for the marks, which the MIT licence does not cover.
 
 **What you need.** [Claude Code](https://claude.com/claude-code), Node 22 or
 newer, and a Nostr account with a Brainstorm web-of-trust lens: the paper is
@@ -29,8 +27,8 @@ the lens service is in beta.
 teams, feeds and the pages you want, and writes `observer.config.json` for
 you; `observer.config.example.json` shows every setting. Your papers land in
 `editions/`, which is never committed. You can name your paper and set its
-motto; the Brainstorm edition (`"brand": "brainstorm"`) and the ostrich stamps
-are marks listed in [NOTICE](NOTICE), not covered by the MIT licence. The
+motto; the Brainstorm edition (`"brand": "brainstorm"`) is a mark listed in
+[NOTICE](NOTICE), not covered by the MIT licence. The
 Tape (share closes) is off by default: Yahoo's terms do not permit automated
 collection, so turning it on is for personal use at your own risk.
 
@@ -40,7 +38,7 @@ collection, so turning it on is for personal use at your own risk.
 git remote add upstream https://github.com/NosFabrica/the-nostr-observer.git
 ```
 
-Then, whenever NosFabrica moves, merge it into `megistus-edition`:
+Then, whenever NosFabrica moves, merge it into `main`:
 
 ```bash
 git fetch upstream && git merge upstream/main
